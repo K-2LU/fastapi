@@ -20,23 +20,16 @@ class ImageRequest(BaseModel):
 @app.post("/extract-json")
 async def extract_json_from_image(request: ImageRequest):
     try:
-        # Decode Base64 Image
         header, encoded = request.imageBase64.split(",", 1)
         image_bytes = base64.b64decode(encoded)
         image = Image.open(BytesIO(image_bytes))
-
-        # Extract text from image with OCR configuration
         extracted_text = pytesseract.image_to_string(image, config="--psm 6").strip()
 
-        # Clean extracted text
-        extracted_text = re.sub(r"[^\x20-\x7E]", "", extracted_text)  # Remove non-ASCII characters
-
-        # Log extracted text
+        extracted_text = re.sub(r"[^\x20-\x7E]", "", extracted_text) 
         logger.info(f"Extracted text: {extracted_text}")
 
-        # Convert extracted text to structured JSON
         try:
-            extracted_data = json.loads(extracted_text)  # Assumes image contains valid JSON
+            extracted_data = json.loads(extracted_text) 
             success = True
             message = "Successfully extracted JSON from image"
         except json.JSONDecodeError:
