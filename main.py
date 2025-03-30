@@ -17,6 +17,11 @@ app = FastAPI()
 class ImageRequest(BaseModel):
     imageBase64: str
 
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the API!"}
+
 @app.post("/extract-json")
 async def extract_json_from_image(request: ImageRequest):
     try:
